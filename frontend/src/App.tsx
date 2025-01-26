@@ -1,5 +1,4 @@
 import React from 'react';
-import { Logo } from './components/Logo';
 import { SongInfo } from './components/SongInfo/SongInfo';
 import { Lyrics } from './components/Lyrics';
 import AudioRecorder from './components/AudioRecorder';
