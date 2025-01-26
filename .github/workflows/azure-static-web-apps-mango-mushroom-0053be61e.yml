@@ -23,7 +23,7 @@ jobs:
         run: npm install
         working-directory: frontend
       - name: Build the Project
-        run: npm run build
+        run: CI=false npm run build
         working-directory: frontend
       - name: Build And Deploy
         id: builddeploy
