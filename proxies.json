@@ -3,7 +3,7 @@
   "proxies": {
     "identifyProxy": {
       "matchCondition": {
-        "route": "/api/identify"
+        "route": "backend/api/identify"
       },
       "backendUri": "https://vibe-app-func.azurewebsites.net/api/identify"
     }
