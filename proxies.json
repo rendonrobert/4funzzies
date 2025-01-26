@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json.schemastore.org/proxies",
+  "proxies": {
+    "identifyProxy": {
+      "matchCondition": {
+        "route": "/api/identify"
+      },
+      "backendUri": "https://vibe-app-func.azurewebsites.net/api/identify"
+    }
+  }
+}
