@@ -46,7 +46,6 @@ export const RainbowButton: React.FC<RainbowButtonProps> = ({ onClick, isListeni
       
       <button 
         className="relative px-8 py-2 bg-neutral-900 text-white rounded-lg cursor-pointer select-none overflow-hidden"
-        role="button"
         onClick={onClick}
         disabled={isListening}
       >
