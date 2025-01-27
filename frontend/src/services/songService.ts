@@ -3,8 +3,8 @@
 import { Song } from '../types/song';
 
 // Load environment variables
-const API_URL = process.env.REACT_APP_API_URL?.replace(/\/+$/, '');
-const ACCESS_TOKEN = process.env.REACT_APP_ACCESS_TOKEN;
+const API_URL = 'https://vibe-app-func.azurewebsites.net/api';
+const ACCESS_TOKEN = process.env.NEXT_PUBLIC_AZURE_FUNCTION_KEY;
 
 export const identifySong = async (audioBlob: Blob): Promise<Song> => {
   const formData = new FormData();
@@ -18,7 +18,7 @@ export const identifySong = async (audioBlob: Blob): Promise<Song> => {
     const response = await fetch(url, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${ACCESS_TOKEN}`, // Use the token from environment variables
+        'Authorization': `Bearer ${ACCESS_TOKEN}`,
       },
       body: formData,
     });
