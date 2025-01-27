@@ -3,7 +3,7 @@
 import { Song } from '../types/song';
 
 // Load environment variables
-const API_URL = 'https://vibe-app-func.azurewebsites.net/api';
+const API_URL = 'https://vibe-app-func.azurewebsites.net/api/identify?';  // Kept the trailing ?
 const ACCESS_TOKEN = process.env.NEXT_PUBLIC_AZURE_FUNCTION_KEY;
 
 export const identifySong = async (audioBlob: Blob): Promise<Song> => {
@@ -11,11 +11,9 @@ export const identifySong = async (audioBlob: Blob): Promise<Song> => {
   formData.append('file', audioBlob, 'recording.webm');
 
   try {
-    // Ensure clean URL construction
-    const url = `${API_URL}/identify`;
-    console.log('Sending request to:', url); // Add this for debugging
+    console.log('Sending request to:', API_URL); // Add this for debugging
 
-    const response = await fetch(url, {
+    const response = await fetch(API_URL, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${ACCESS_TOKEN}`,
