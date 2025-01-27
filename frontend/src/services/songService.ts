@@ -1,19 +1,31 @@
+// src/services/songService.ts
+
 import { Song } from '../types/song';
 
-const API_URL = 'https://vibe-app-func.azurewebsites.net/api';
+// Load environment variables
+const API_URL = process.env.REACT_APP_API_URL;
+const ACCESS_TOKEN = process.env.REACT_APP_ACCESS_TOKEN;
 
 export const identifySong = async (audioBlob: Blob): Promise<Song> => {
   const formData = new FormData();
   formData.append('file', audioBlob, 'recording.webm');
 
-  const response = await fetch(`${API_URL}/identify`, {
-    method: 'POST',
-    body: formData,
-  });
+  try {
+    const response = await fetch(`${API_URL}/identify`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${ACCESS_TOKEN}`, // Use the token from environment variables
+      },
+      body: formData,
+    });
 
-  if (!response.ok) {
-    throw new Error('Failed to identify song');
+    if (!response.ok) {
+      throw new Error('Failed to identify song');
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error('Error identifying song:', error);
+    throw error;
   }
-
-  return response.json();
 };

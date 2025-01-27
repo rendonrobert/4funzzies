@@ -1,3 +1,5 @@
+// src/components/AudioRecorder.tsx
+
 import React from 'react';
 import { useAudioRecorder } from '../hooks/useAudioRecorder';
 import { identifySong } from '../services/songService';
@@ -13,7 +15,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({ onSongRecognized }) => {
 
   const handleClick = async () => {
     if (isRecording) return;
-    
+
     try {
       await startRecording();
     } catch (err) {
