@@ -3,7 +3,7 @@
 import { Song } from '../types/song';
 
 // Load environment variables
-const API_URL = 'https://vibe-app-func.azurewebsites.net/api/identify';
+const API_URL = 'https://vibe-app-func.azurewebsites.net/identify';
 const ACCESS_TOKEN = process.env.NEXT_PUBLIC_AZURE_FUNCTION_KEY;
 
 export const identifySong = async (audioBlob: Blob): Promise<Song> => {
