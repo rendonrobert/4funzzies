@@ -1,72 +1,28 @@
-name: Deploy to Azure Functions
-
+name: Deploy Azure Function
 on:
   push:
-    branches:
-      - main  # or master, depending on your default branch name
-  pull_request:
     branches: [ main ]
-  workflow_dispatch:  # Allows manual trigger from GitHub UI
-    inputs:
-      environment:
-        description: 'Environment to deploy to'
-        required: true
-        default: 'production'
-
-env:
-  AZURE_FUNCTIONAPP_NAME: 'vibe-app-func'
-  PYTHON_VERSION: '3.9'
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 15  # Prevents hanging deployments
-    
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
+    - uses: actions/checkout@v2
+    
     - name: Setup Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v2
       with:
-        python-version: ${{ env.PYTHON_VERSION }}
-
-    - name: Cache pip packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
-
-    - name: Install Azure Functions Core Tools
+        python-version: '3.9'
+        
+    - name: Install dependencies
       run: |
-        curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-        sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
-        sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-$(lsb_release -cs)-prod $(lsb_release -cs) main" > /etc/apt/sources.list.d/dotnetdev.list'
-        sudo apt-get update
-        sudo apt-get install azure-functions-core-tools-4
-
-    - name: Create virtual environment and install dependencies
-      run: |
-        python -m venv .venv
-        source .venv/bin/activate
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: 'Deploy to Azure Functions'
+    - name: 'Deploy Azure Function'
       uses: Azure/functions-action@v1
-      id: deploy
       with:
-        app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
-        package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
+        app-name: 'vibe-app-func'
+        package: '.'
         publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
-        scm-do-build-during-deployment: true
-        enable-oryx-build: true
-
-    - name: Post-deployment check
-      if: success()
-      run: |
-        echo "Deployment completed successfully!"
-        echo "Function App URL: https://${{ env.AZURE_FUNCTIONAPP_NAME }}.azurewebsites.net" 
+      env:
+        AZURE_FUNCTION_KEY: ${{ secrets.AZURE_FUNCTION_KEY }}

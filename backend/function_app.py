@@ -7,13 +7,30 @@ from services.lyrics_service import LyricsService
 app = func.FunctionApp()
 
 @app.function_name(name="identify")
-@app.route(route="identify", auth_level=func.AuthLevel.ANONYMOUS)
+@app.route(route="identify", auth_level=func.AuthLevel.FUNCTION)
 async def identify(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
+    # Handle CORS preflight request
+    if req.method == "OPTIONS":
+        return func.HttpResponse(
+            status_code=200,
+            headers={
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'POST, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                'Access-Control-Max-Age': '86400'
+            }
+        )
+
     try:
-        # Get the file from the request
-        file_data = req.get_body()
+        # Get the file from form data
+        file_data = None
+        for name, file in req.files.items():
+            if name == 'file':
+                file_data = file.read()
+                break
+
         if not file_data:
             return func.HttpResponse(
                 json.dumps({
@@ -46,7 +63,8 @@ async def identify(req: func.HttpRequest) -> func.HttpResponse:
             "song": {
                 "title": song_info.get('title'),
                 "artist": song_info.get('artist'),
-                "album": song_info.get('album')
+                "album": song_info.get('album'),
+                "artwork": song_info.get('artwork')
             },
             "lyrics": lyrics if lyrics else []
         }
@@ -56,9 +74,9 @@ async def identify(req: func.HttpRequest) -> func.HttpResponse:
             mimetype="application/json",
             status_code=200,
             headers={
-                'Access-Control-Allow-Origin': '*',  # Or your specific domain
+                'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': 'POST, OPTIONS',
-                'Access-Control-Allow-Headers': 'Content-Type'
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization'
             }
         )
 
@@ -66,7 +84,8 @@ async def identify(req: func.HttpRequest) -> func.HttpResponse:
         logging.error(f"Error processing request: {str(e)}")
         return func.HttpResponse(
             json.dumps({
-                "error": f"An error occurred: {str(e)}"
+                "error": "An error occurred while processing your request",
+                "details": str(e)
             }),
             mimetype="application/json",
             status_code=500
