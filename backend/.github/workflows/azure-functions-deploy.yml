@@ -4,7 +4,14 @@ on:
   push:
     branches:
       - main  # or master, depending on your default branch name
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:  # Allows manual trigger from GitHub UI
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'production'
 
 env:
   AZURE_FUNCTIONAPP_NAME: 'vibe-app-func'
