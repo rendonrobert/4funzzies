@@ -32,7 +32,7 @@ jobs:
           app_build_command: "npm run build"
         env:
           REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
-          NEXT_PUBLIC_AZURE_FUNCTION_KEY: ${{ secrets.AZURE_FUNCTION_KEY }}
+          NEXT_PUBLIC_AZURE_FUNCTION_KEY: ${{ secrets.NEXT_PUBLIC_AZURE_FUNCTION_KEY }}
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-latest
