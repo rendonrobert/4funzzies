@@ -1,10 +1,8 @@
 import { Song } from '../types/song';
-
-const API_URL = process.env.REACT_APP_API_URL || 'https://vibe-app-func.azurewebsites.net/api/identify';
-const ACCESS_TOKEN = process.env.NEXT_PUBLIC_AZURE_FUNCTION_KEY;
+import { config } from '../config';
 
 export const identifySong = async (audioBlob: Blob): Promise<Song> => {
-  if (!ACCESS_TOKEN) {
+  if (!config.AZURE_FUNCTION_KEY) {
     console.error('Azure Function key is not configured');
     throw new Error('Authentication configuration missing');
   }
@@ -13,12 +11,12 @@ export const identifySong = async (audioBlob: Blob): Promise<Song> => {
   formData.append('file', audioBlob, 'recording.webm');
 
   try {
-    console.log('Sending request to:', API_URL); // Debug log
+    console.log('Sending request to:', config.AZURE_FUNCTION_URL); // Debug log
 
-    const response = await fetch(API_URL, {
+    const response = await fetch(config.AZURE_FUNCTION_URL, {
       method: 'POST',
       headers: {
-        'x-functions-key': ACCESS_TOKEN,
+        'x-functions-key': config.AZURE_FUNCTION_KEY,
         'Accept': 'application/json',
       },
       body: formData,

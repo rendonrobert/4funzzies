@@ -5,7 +5,7 @@ export class AudioRecorder {
   async startRecording(): Promise<void> {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      this.mediaRecorder = new MediaRecorder(stream);
+      this.mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/ogg' });
       this.audioChunks = [];
 
       this.mediaRecorder.ondataavailable = (event) => {
@@ -29,7 +29,7 @@ export class AudioRecorder {
       }
 
       this.mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(this.audioChunks, { type: 'audio/wav' });
+        const audioBlob = new Blob(this.audioChunks, { type: 'audio/ogg' });
         this.audioChunks = [];
         resolve(audioBlob);
       };
