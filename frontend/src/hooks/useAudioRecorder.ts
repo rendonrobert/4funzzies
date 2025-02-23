@@ -30,16 +30,19 @@ export const useAudioRecorder = () => {
   }, [mediaRecorder]);
 
   const reset = useCallback(() => {
-    stopRecording();
     chunksRef.current = [];
     setProgress(0);
     setAudioBlob(null);
     setMediaRecorder(null);
-  }, [stopRecording]);
+  }, []);
 
   const startRecording = useCallback(async () => {
     try {
+      if (isRecording) {
+        stopRecording();
+      }
       reset();
+
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
 
@@ -71,9 +74,9 @@ export const useAudioRecorder = () => {
         setIsRecording(false);
       };
 
-      recorder.start(500);
       setMediaRecorder(recorder);
       setIsRecording(true);
+      recorder.start(500);
 
       // Set timeout to stop recording
       timerRef.current = setTimeout(() => {
@@ -83,17 +86,19 @@ export const useAudioRecorder = () => {
 
     } catch (error) {
       console.error('Error starting recording:', error);
+      stopRecording();
       reset();
       throw error;
     }
-  }, [reset, stopRecording]);
+  }, [isRecording, stopRecording, reset]);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
+      stopRecording();
       reset();
     };
-  }, [reset]);
+  }, [stopRecording, reset]);
 
   return {
     startRecording,
