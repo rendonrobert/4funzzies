@@ -1,54 +1,58 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef } from 'react';
 
-const RECORDING_DURATION = 12000; // 12 seconds in milliseconds
+const RECORDING_DURATION = 10000; // 10 seconds
 
 export const useAudioRecorder = () => {
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
-  const timerRef = useRef<number | null>(null);
+  const [audioFormat, setAudioFormat] = useState<string>('');
+
   const streamRef = useRef<MediaStream | null>(null);
+  const timerRef = useRef<number | null>(null);
 
   const reset = useCallback(() => {
-    setIsRecording(false);
-    setAudioBlob(null);
-    setMediaRecorder(null);
-    if (timerRef.current) {
-      window.clearTimeout(timerRef.current);
-      timerRef.current = null;
-    }
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop());
       streamRef.current = null;
     }
+    if (timerRef.current) {
+      window.clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+    setAudioBlob(null);
+    setIsRecording(false);
+    setMediaRecorder(null);
   }, []);
-
-  useEffect(() => {
-    return () => {
-      reset();
-    };
-  }, [reset]);
 
   const stopRecording = useCallback(() => {
     if (mediaRecorder && mediaRecorder.state !== 'inactive') {
       mediaRecorder.stop();
-      setIsRecording(false);
-    }
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
+      if (timerRef.current) {
+        window.clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
     }
   }, [mediaRecorder]);
 
   const startRecording = useCallback(async () => {
     try {
-      if (!MediaRecorder.isTypeSupported('audio/ogg')) {
-        throw new Error('audio/ogg is not supported in this browser');
-      }
       reset();
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
-      
-      const recorder = new MediaRecorder(stream, { mimeType: 'audio/ogg' });
+
+      // Try MP3 first, fall back to other formats if not supported
+      const mimeType = MediaRecorder.isTypeSupported('audio/mp3') ? 'audio/mp3'
+        : MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm'
+          : MediaRecorder.isTypeSupported('audio/ogg') ? 'audio/ogg'
+            : null;
+
+      if (!mimeType) {
+        throw new Error('No supported audio format found');
+      }
+
+      setAudioFormat(mimeType);
+      const recorder = new MediaRecorder(stream, { mimeType });
       const chunks: BlobPart[] = [];
 
       recorder.ondataavailable = (e) => {
@@ -58,7 +62,7 @@ export const useAudioRecorder = () => {
       };
 
       recorder.onstop = () => {
-        const blob = new Blob(chunks, { type: 'audio/ogg' });
+        const blob = new Blob(chunks, { type: mimeType });
         setAudioBlob(blob);
         setIsRecording(false);
         if (streamRef.current) {
@@ -86,6 +90,7 @@ export const useAudioRecorder = () => {
     stopRecording,
     isRecording,
     audioBlob,
+    audioFormat,
     reset
   };
 };

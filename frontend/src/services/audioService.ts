@@ -5,7 +5,18 @@ export class AudioRecorder {
   async startRecording(): Promise<void> {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      this.mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/ogg' });
+
+      // Try MP3 first, fall back to other formats if not supported
+      const mimeType = MediaRecorder.isTypeSupported('audio/mp3') ? 'audio/mp3'
+        : MediaRecorder.isTypeSupported('audio/webm') ? 'audio/webm'
+          : MediaRecorder.isTypeSupported('audio/ogg') ? 'audio/ogg'
+            : null;
+
+      if (!mimeType) {
+        throw new Error('No supported audio format found');
+      }
+
+      this.mediaRecorder = new MediaRecorder(stream, { mimeType });
       this.audioChunks = [];
 
       this.mediaRecorder.ondataavailable = (event) => {
@@ -29,7 +40,7 @@ export class AudioRecorder {
       }
 
       this.mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(this.audioChunks, { type: 'audio/ogg' });
+        const audioBlob = new Blob(this.audioChunks, { type: this.mediaRecorder?.mimeType });
         this.audioChunks = [];
         resolve(audioBlob);
       };

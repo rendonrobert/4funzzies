@@ -7,11 +7,19 @@ export const identifySong = async (audioBlob: Blob): Promise<Song> => {
     throw new Error('Authentication configuration missing');
   }
 
+  const getFileExtension = (blob: Blob) => {
+    const type = blob.type;
+    if (type.includes('mp3')) return 'mp3';
+    if (type.includes('webm')) return 'webm';
+    if (type.includes('ogg')) return 'ogg';
+    return 'audio'; // fallback
+  };
+
   const formData = new FormData();
-  formData.append('file', audioBlob, 'recording.ogg');
+  formData.append('file', audioBlob, `recording.${getFileExtension(audioBlob)}`);
 
   try {
-    console.log('Sending request to:', config.AZURE_FUNCTION_URL); // Debug log
+    console.log('Sending request to:', config.AZURE_FUNCTION_URL);
 
     const response = await fetch(config.AZURE_FUNCTION_URL, {
       method: 'POST',
