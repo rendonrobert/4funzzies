@@ -1,7 +1,7 @@
 import { Song } from '../types/song';
 
 export const identifySong = async (audioBlob: Blob): Promise<Song> => {
-  if (!config.AZURE_FUNCTION_KEY) {
+  if (!process.env.REACT_APP_AZURE_FUNCTION_KEY) {
     console.error('Azure Function key is not configured');
     throw new Error('Authentication configuration missing');
   }
@@ -20,13 +20,13 @@ export const identifySong = async (audioBlob: Blob): Promise<Song> => {
   const fileName = `recording.${getFileExtension(audioBlob)}`;
   formData.append('file', audioBlob, fileName);
   console.log('Sending file:', fileName);
-  console.log('Azure Function URL:', config.AZURE_FUNCTION_URL);
+  console.log('Azure Function URL:', process.env.REACT_APP_AZURE_FUNCTION_URL);
 
   try {
-    const response = await fetch(config.AZURE_FUNCTION_URL, {
+    const response = await fetch(process.env.REACT_APP_AZURE_FUNCTION_URL!, {
       method: 'POST',
       headers: {
-        'x-functions-key': config.AZURE_FUNCTION_KEY,
+        'x-functions-key': process.env.REACT_APP_AZURE_FUNCTION_KEY,
         'Accept': 'application/json',
       },
       body: formData,
