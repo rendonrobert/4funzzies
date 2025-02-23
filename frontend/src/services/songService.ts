@@ -23,7 +23,7 @@ export const identifySong = async (audioBlob: Blob): Promise<Song> => {
   console.log('Azure Function URL:', process.env.AZURE_FUNCTION_URL);
 
   try {
-    const response = await fetch(process.env.APP_AZURE_FUNCTION_URL!, {
+    const response = await fetch(process.env.AZURE_FUNCTION_URL!, {
       method: 'POST',
       headers: {
         'x-functions-key': process.env.AZURE_FUNCTION_KEY,
