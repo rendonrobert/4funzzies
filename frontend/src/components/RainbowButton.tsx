@@ -4,6 +4,7 @@ interface RainbowButtonProps {
   onClick: () => void;
   isListening: boolean;
   isProcessing?: boolean;
+  progress: number;
 }
 
 export const RainbowButton: React.FC<RainbowButtonProps> = ({

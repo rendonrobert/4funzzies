@@ -1,6 +1,7 @@
 export class AudioRecorder {
   private mediaRecorder: MediaRecorder | null = null;
   private audioChunks: Blob[] = [];
+  private recordingTimeout: number | null = null;
 
   async startRecording(): Promise<void> {
     try {
@@ -25,7 +26,13 @@ export class AudioRecorder {
         }
       };
 
-      this.mediaRecorder.start();
+      this.mediaRecorder.start(500); // Collect data every 500ms
+
+      // Set timeout to stop recording after 10 seconds
+      this.recordingTimeout = window.setTimeout(() => {
+        this.stopRecording();
+      }, 10000);
+
     } catch (error) {
       console.error('Error starting recording:', error);
       throw error;
@@ -37,6 +44,12 @@ export class AudioRecorder {
       if (!this.mediaRecorder) {
         reject(new Error('No recording in progress'));
         return;
+      }
+
+      // Clear the timeout if it exists
+      if (this.recordingTimeout) {
+        window.clearTimeout(this.recordingTimeout);
+        this.recordingTimeout = null;
       }
 
       this.mediaRecorder.onstop = () => {

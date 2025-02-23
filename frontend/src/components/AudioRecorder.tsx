@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useAudioRecorder } from '../hooks/useAudioRecorder';
 import { identifySong } from '../services/songService';
-import { Song } from '../types/song';
 import { RainbowButton } from './RainbowButton';
+import { Song } from '../types/song';
 
 interface AudioRecorderProps {
-  onSongRecognized: (song: Song) => void;
+  onSongRecognized: (song: Song | null) => void;
   onError?: (error: string) => void;
 }
 
@@ -13,7 +13,13 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({
   onSongRecognized,
   onError
 }) => {
-  const { startRecording, isRecording, audioBlob, reset } = useAudioRecorder();
+  const {
+    startRecording,
+    isRecording,
+    audioBlob,
+    progress,
+    reset
+  } = useAudioRecorder();
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleClick = async () => {
@@ -54,6 +60,7 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({
       onClick={handleClick}
       isListening={isRecording}
       isProcessing={isProcessing}
+      progress={progress}
     />
   );
 };
