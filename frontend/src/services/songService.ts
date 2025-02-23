@@ -8,7 +8,7 @@ export const identifySong = async (audioBlob: Blob): Promise<Song> => {
   }
 
   const formData = new FormData();
-  formData.append('file', audioBlob, 'recording.webm');
+  formData.append('file', audioBlob, 'recording.ogg');
 
   try {
     console.log('Sending request to:', config.AZURE_FUNCTION_URL); // Debug log

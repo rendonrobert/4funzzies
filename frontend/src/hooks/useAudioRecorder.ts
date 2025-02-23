@@ -41,11 +41,14 @@ export const useAudioRecorder = () => {
 
   const startRecording = useCallback(async () => {
     try {
+      if (!MediaRecorder.isTypeSupported('audio/ogg')) {
+        throw new Error('audio/ogg is not supported in this browser');
+      }
       reset();
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
       
-      const recorder = new MediaRecorder(stream);
+      const recorder = new MediaRecorder(stream, { mimeType: 'audio/ogg' });
       const chunks: BlobPart[] = [];
 
       recorder.ondataavailable = (e) => {
@@ -55,7 +58,7 @@ export const useAudioRecorder = () => {
       };
 
       recorder.onstop = () => {
-        const blob = new Blob(chunks, { type: 'audio/webm' });
+        const blob = new Blob(chunks, { type: 'audio/ogg' });
         setAudioBlob(blob);
         setIsRecording(false);
         if (streamRef.current) {
