@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { useAudioRecorder } from '../hooks/useAudioRecorder';
 import { identifySong } from '../services/songService';
 import { RainbowButton } from './RainbowButton';
@@ -13,17 +13,10 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({
   onSongRecognized,
   onError
 }) => {
-  const {
-    startRecording,
-    isRecording,
-    audioBlob,
-    progress,
-    reset
-  } = useAudioRecorder();
-  const [isProcessing, setIsProcessing] = useState(false);
+  const { startRecording, isRecording, audioBlob, progress } = useAudioRecorder();
 
   const handleClick = async () => {
-    if (isRecording || isProcessing) return;
+    if (isRecording) return;
 
     try {
       await startRecording();
@@ -34,10 +27,9 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({
     }
   };
 
-  React.useEffect(() => {
-    const identifyAudio = async () => {
+  useEffect(() => {
+    const processSong = async () => {
       if (audioBlob && !isRecording) {
-        setIsProcessing(true);
         try {
           const song = await identifySong(audioBlob);
           onSongRecognized(song);
@@ -45,21 +37,18 @@ const AudioRecorder: React.FC<AudioRecorderProps> = ({
           const errorMessage = err instanceof Error ? err.message : 'Failed to identify song';
           console.error('Identification error:', errorMessage);
           onError?.(errorMessage);
-        } finally {
-          setIsProcessing(false);
-          reset();
         }
       }
     };
 
-    identifyAudio();
-  }, [audioBlob, isRecording, onSongRecognized, onError, reset]);
+    processSong();
+  }, [audioBlob, isRecording, onSongRecognized, onError]);
 
   return (
     <RainbowButton
       onClick={handleClick}
       isListening={isRecording}
-      isProcessing={isProcessing}
+      isProcessing={!isRecording && !!audioBlob}
       progress={progress}
     />
   );
