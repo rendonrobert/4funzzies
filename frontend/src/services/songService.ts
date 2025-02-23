@@ -1,3 +1,5 @@
+import { Song } from '../types/song';
+
 export const identifySong = async (audioBlob: Blob): Promise<Song> => {
   if (!config.AZURE_FUNCTION_KEY) {
     console.error('Azure Function key is not configured');
