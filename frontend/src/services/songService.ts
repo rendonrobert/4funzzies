@@ -1,6 +1,3 @@
-import { Song } from '../types/song';
-import { config } from '../config';
-
 export const identifySong = async (audioBlob: Blob): Promise<Song> => {
   if (!config.AZURE_FUNCTION_KEY) {
     console.error('Azure Function key is not configured');
@@ -9,18 +6,21 @@ export const identifySong = async (audioBlob: Blob): Promise<Song> => {
 
   const getFileExtension = (blob: Blob) => {
     const type = blob.type;
+    console.log('Audio blob type:', type);
+    console.log('Audio blob size:', blob.size, 'bytes');
     if (type.includes('mp3')) return 'mp3';
     if (type.includes('webm')) return 'webm';
     if (type.includes('ogg')) return 'ogg';
-    return 'audio'; // fallback
+    return 'audio';
   };
 
   const formData = new FormData();
-  formData.append('file', audioBlob, `recording.${getFileExtension(audioBlob)}`);
+  const fileName = `recording.${getFileExtension(audioBlob)}`;
+  formData.append('file', audioBlob, fileName);
+  console.log('Sending file:', fileName);
+  console.log('Azure Function URL:', config.AZURE_FUNCTION_URL);
 
   try {
-    console.log('Sending request to:', config.AZURE_FUNCTION_URL);
-
     const response = await fetch(config.AZURE_FUNCTION_URL, {
       method: 'POST',
       headers: {
@@ -30,19 +30,15 @@ export const identifySong = async (audioBlob: Blob): Promise<Song> => {
       body: formData,
     });
 
+    console.log('Response status:', response.status);
+    const responseText = await response.text();
+    console.log('Response body:', responseText);
+
     if (!response.ok) {
-      let errorMessage = `Failed to identify song: ${response.status}`;
-      try {
-        const errorData = await response.json();
-        errorMessage = errorData?.error || errorMessage;
-      } catch {
-        // If error response isn't JSON, use default message
-      }
-      throw new Error(errorMessage);
+      throw new Error(`Failed to identify song: ${response.status} - ${responseText}`);
     }
 
-    const data = await response.json();
-
+    const data = JSON.parse(responseText);
     if (!data.song) {
       throw new Error('Invalid response format from server');
     }
@@ -50,6 +46,6 @@ export const identifySong = async (audioBlob: Blob): Promise<Song> => {
     return data.song;
   } catch (error) {
     console.error('Error identifying song:', error);
-    throw error instanceof Error ? error : new Error('Failed to identify song');
+    throw error;
   }
 };
