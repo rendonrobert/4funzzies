@@ -4,68 +4,334 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Robert Rendon - Resume</title>
-    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --background: 210 40% 98%;
+            --foreground: 222.2 84% 4.9%;
+            --card: 0 0% 100%;
+            --card-foreground: 222.2 84% 4.9%;
+            --primary: 221 83% 53%;
+            --primary-foreground: 210 40% 98%;
+            --secondary: 199 89% 48%;
+            --secondary-foreground: 210 40% 98%;
+            --accent: 262 83% 58%;
+            --accent-foreground: 210 40% 98%;
+            --border: 214.3 31.8% 91.4%;
+            --radius: 0.5rem;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: hsl(var(--foreground));
+            background: linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(var(--secondary) / 0.1), hsl(var(--accent) / 0.1));
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 64rem;
+            margin: 3rem auto;
+            background: hsl(var(--card));
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(to right, hsl(221, 83%, 53%), hsl(262, 83%, 58%));
+            color: hsl(var(--primary-foreground));
+            padding: 2rem;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.25rem;
+            font-weight: bold;
+        }
+
+        .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .contact-info div {
+            display: flex;
+            align-items: center;
+        }
+
+        .contact-info i {
+            margin-right: 0.5rem;
+        }
+
+        main {
+            padding: 2rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: hsl(var(--primary));
+        }
+
+        .card {
+            background: hsl(var(--card));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid hsl(var(--border));
+        }
+
+        .card-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .card-header p {
+            color: hsl(var(--foreground) / 0.6);
+            margin: 0;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 9999px;
+            background-color: hsl(var(--secondary));
+            color: hsl(var(--secondary-foreground));
+        }
+
+        ul {
+            padding-left: 1.5rem;
+        }
+
+        .skill-list {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .skill-list li {
+            background: hsl(var(--primary) / 0.1);
+            color: hsl(var(--primary));
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius);
+            font-size: 0.875rem;
+        }
+
+        footer {
+            background: linear-gradient(to right, hsl(221, 83%, 53%), hsl(262, 83%, 58%));
+            color: hsl(var(--primary-foreground));
+            text-align: center;
+            padding: 1rem;
+        }
+
+        footer a {
+            color: hsl(var(--primary-foreground));
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                margin: 1rem;
+            }
+
+            header, main {
+                padding: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>Robert Rendon</h1>
-            <p>Highland, CA 92346 | robert.rendon@outlook.com | +1 909 253 8755</p>
+            <div class="contact-info">
+                <div>
+                    <i data-lucide="map-pin"></i>
+                    Highland, CA 92346
+                </div>
+                <div>
+                    <i data-lucide="mail"></i>
+                    robert.rendon@outlook.com
+                </div>
+                <div>
+                    <i data-lucide="phone"></i>
+                    +1 909 253 8755
+                </div>
+            </div>
         </header>
 
-        <section class="summary">
-            <h2>Professional Summary</h2>
-            <p>Diligent Inventory Control Lead with 6 years of experience in managing inventory control processes,
-            implementing new systems, and optimizing warehouse operations. Proficient in data migration, data
-            manipulation, and data visualization. Skilled in various warehouse management systems, cloud based
-            platforms, quality control, and forklift operation. Proven track record of reducing shipment discrepancies
-            and improving operational efficiency.</p>
-        </section>
+        <main>
+            <section class="summary">
+                <h2>Professional Summary</h2>
+                <div class="card">
+                    <div class="card-content">
+                        <p>Diligent Inventory Control Lead with 6 years of experience in managing inventory control processes,
+                        implementing new systems, and optimizing warehouse operations. Proficient in data migration, data
+                        manipulation, and data visualization. Skilled in various warehouse management systems, cloud based
+                        platforms, quality control, and forklift operation. Proven track record of reducing shipment discrepancies
+                        and improving operational efficiency.</p>
+                    </div>
+                </div>
+            </section>
 
-        <section class="experience">
-            <h2>Work Experience</h2>
-            <div class="job">
-                <h3>Inventory Control Lead</h3>
-                <p class="company">Logistics Plus Inc. - Colton, CA</p>
-                <p class="date">July 2024 to Present</p>
-                <ul>
-                    <li>Led inventory operations across 275,000 sqft facility, successfully managing 8 vendors' complex requirements while maintaining accurate tracking of 2,000+ SKUs through integrated DMAIC methodologies.</li>
-                    <li>Enhanced inventory management through implementation of underutilized control systems and 5S organization principles, achieving a 22% reduction in shipment discrepancies and establishing benchmark KPIs.</li>
-                    <li>Executed comprehensive root cause analysis (RCA) investigations for inventory variances, developing data-driven solutions that enhanced accuracy and standardized corrective action procedures.</li>
-                </ul>
-            </div>
-            <!-- Add more job entries here -->
-        </section>
+            <section class="experience">
+                <h2>Work Experience</h2>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Inventory Control Lead</h3>
+                        <p>Logistics Plus Inc. - Colton, CA</p>
+                        <span class="badge">July 2024 to Present</span>
+                    </div>
+                    <div class="card-content">
+                        <ul>
+                            <li>Led inventory operations across 275,000 sqft facility, successfully managing 8 vendors' complex requirements while maintaining accurate tracking of 2,000+ SKUs through integrated DMAIC methodologies.</li>
+                            <li>Enhanced inventory management through implementation of underutilized control systems and 5S organization principles, achieving a 22% reduction in shipment discrepancies and establishing benchmark KPIs.</li>
+                            <li>Executed comprehensive root cause analysis (RCA) investigations for inventory variances, developing data-driven solutions that enhanced accuracy and standardized corrective action procedures.</li>
+                            <li>Advocated Lean Six Sigma initiatives focused on bulky materials handling, implementing specialized racking solutions and optimized pick paths that maximized vertical storage efficiency.</li>
+                            <li>Created and standardized inventory control SOPs across multiple departments, incorporating best practices for specialty materials like flooring and raw metals while ensuring safe handling compliance.</li>
+                            <li>Redesigned warehouse layout utilizing advanced space optimization techniques, resulting in improved product flow and enhanced accessibility for high-volume SKUs while maintaining strict organization protocols.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Student</h3>
+                        <p>CalPoly Pomona - Pomona, CA</p>
+                        <span class="badge">July 2022 to May 2024</span>
+                    </div>
+                    <div class="card-content">
+                        <p>After transferring from San Bernardino Valley College to CalPoly Pomona, scheduling conflicts prevented me from attending school and working full time, reflecting the two year gap in employment and my departure from Amazon.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Process Assistant (Supervisor)</h3>
+                        <p>Amazon.com - Fontana, CA</p>
+                        <span class="badge">July 2019 to June 2022</span>
+                    </div>
+                    <div class="card-content">
+                        <ul>
+                            <li>Orchestrated labor allocation strategies, led meetings for workflow coordination, and assigned job duties to ensure efficient and effective operations within the fulfillment center</li>
+                            <li>Enforced safety protocols, optimizing warehouse operations and contributing to a secure and compliant work environment</li>
+                            <li>Managed a team of 30 receiving associates, overseeing all aspects of the receiving process</li>
+                            <li>Trained new employees on proper receiving procedures, safety protocols, and equipment operation</li>
+                            <li>Maintained a clean and organized receiving area, adhering to safety guidelines at all times</li>
+                            <li>Mentored team members in developing their skills and knowledge of receiving processes</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Inventory Control Specialist</h3>
+                        <p>The Pep Boys - San Bernardino, CA</p>
+                        <span class="badge">August 2016 to July 2019</span>
+                    </div>
+                    <div class="card-content">
+                        <ul>
+                            <li>Spearheaded data migration efforts, seamlessly extracting information from warehouse management systems to Excel, ensuring efficient data handling</li>
+                            <li>Demonstrated expertise in advanced Excel functions, including PivotTables, macro-functions, and Visual Basic editor, resulting in precise and streamlined data processing</li>
+                            <li>Presented valuable insights through data visualization, effectively communicating complex information and supporting informed decision-making within the organization.</li>
+                            <li>Monitored inventory levels on a regular basis to identify potential shortages or excesses and take appropriate action</li>
+                            <li>Conducted regular audits of physical inventory counts to reconcile any discrepancies between actual stock levels and recorded data</li>
+                            <li>Implemented safety stock policies to mitigate risks associated with unexpected fluctuations in demand or supply chain disruptions</li>
+                            <li>Implemented demand-driven replenishment strategies to minimize stockouts while reducing excess inventory levels</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
 
-        <section class="education">
-            <h2>Education</h2>
-            <div class="degree">
-                <h3>Bachelor of Science in Computer Information Systems</h3>
-                <p class="school">Cal Poly Pomona - Pomona, CA</p>
-                <p class="date">August 2022 to May 2024</p>
-            </div>
-            <!-- Add more education entries here -->
-        </section>
+            <section class="education">
+                <h2>Education</h2>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Bachelor of Science in Computer Information Systems</h3>
+                        <p>Cal Poly Pomona - Pomona, CA</p>
+                        <span class="badge">August 2022 to May 2024</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Associate in Science for Transfer (AS-T) in Business Administration</h3>
+                        <p>San Bernardino Valley College - San Bernardino, CA</p>
+                        <span class="badge">August 2020 to May 2022</span>
+                    </div>
+                </div>
+            </section>
 
-        <section class="skills">
-            <h2>Skills</h2>
-            <ul>
-                <li>Quality control</li>
-                <li>Data analytics</li>
-                <li>Organizational Commitment</li>
-                <li>Warehouse management system</li>
-                <li>Information security</li>
-                <li>IT Security Best Practices</li>
-                <li>Forklift</li>
-                <li>Strategic Planning</li>
-                <li>Microsoft Excel</li>
-            </ul>
-        </section>
+            <section class="skills">
+                <h2>Skills</h2>
+                <div class="card">
+                    <div class="card-content">
+                        <ul class="skill-list">
+                            <li>Quality control</li>
+                            <li>Data analytics</li>
+                            <li>Organizational Commitment</li>
+                            <li>Warehouse management system</li>
+                            <li>Information security</li>
+                            <li>IT Security Best Practices</li>
+                            <li>Forklift</li>
+                            <li>Strategic Planning</li>
+                            <li>Microsoft Excel</li>
+                            <li>Shipping & receiving</li>
+                            <li>Business Intelligence (BI)</li>
+                            <li>Warehouse supervisor experience</li>
+                            <li>Data Analytics</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="additional-info">
+                <h2>Additional Information</h2>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Professional References</h3>
+                    </div>
+                    <div class="card-content">
+                        <ul>
+                            <li>Martha Gutierrez (San Bernardino Community College District Assistant Manager - Workforce Program) magutierrez@sbccd.edu</li>
+                            <li>Anthony Ortiz (Logistics Plus - Warehouse Manager) anthony.ortiz@logisticsplus.com</li>
+                            <li>Nakia Blackwell (Inventory Control Supervisor - Pep Boys) (909) 362-7863</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
 
         <footer>
             <a href="http://www.linkedin.com/in/rendonrobert" target="_blank" rel="noopener noreferrer">LinkedIn Profile</a>
         </footer>
     </div>
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>
-

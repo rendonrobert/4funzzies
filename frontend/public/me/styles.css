@@ -1,77 +1,147 @@
+:root {
+  --background: 210 40% 98%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --primary: 221 83% 53%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 199 89% 48%;
+  --secondary-foreground: 210 40% 98%;
+  --accent: 262 83% 58%;
+  --accent-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --radius: 0.5rem;
+}
+
 body {
-  font-family: Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   line-height: 1.6;
-  color: #333;
-  background-color: #f4f4f4;
+  color: hsl(var(--foreground));
+  background: linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(var(--secondary) / 0.1), hsl(var(--accent) / 0.1));
   margin: 0;
   padding: 0;
+  min-height: 100vh;
 }
 
 .container {
-  width: 80%;
-  margin: auto;
-  background: #fff;
-  padding: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 64rem;
+  margin: 3rem auto;
+  background: hsl(var(--card));
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border-radius: var(--radius);
+  overflow: hidden;
 }
 
 header {
-  background: #3b82f6;
-  color: #fff;
-  text-align: center;
-  padding: 20px;
-  margin-bottom: 20px;
+  background: linear-gradient(to right, hsl(221, 83%, 53%), hsl(262, 83%, 58%));
+  color: hsl(var(--primary-foreground));
+  padding: 2rem;
 }
 
 header h1 {
   margin: 0;
+  font-size: 2.25rem;
+  font-weight: bold;
+}
+
+.contact-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.contact-info div {
+  display: flex;
+  align-items: center;
+}
+
+.contact-info i {
+  margin-right: 0.5rem;
+}
+
+main {
+  padding: 2rem;
 }
 
 h2 {
-  color: #3b82f6;
-  border-bottom: 2px solid #3b82f6;
-  padding-bottom: 5px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: hsl(var(--primary));
 }
 
-.job,
-.degree {
-  margin-bottom: 20px;
+.card {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  margin-bottom: 1.5rem;
 }
 
-.company,
-.school,
-.date {
-  font-style: italic;
-  color: #666;
+.card-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.card-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+.card-header p {
+  color: hsl(var(--foreground) / 0.6);
+  margin: 0;
+}
+
+.card-content {
+  padding: 1.5rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 9999px;
+  background-color: hsl(var(--secondary));
+  color: hsl(var(--secondary-foreground));
 }
 
 ul {
-  padding-left: 20px;
+  padding-left: 1.5rem;
 }
 
-.skills ul {
-  list-style-type: none;
+.skill-list {
+  list-style: none;
   padding: 0;
   display: flex;
   flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
-.skills li {
-  background: #e2e8f0;
-  margin: 5px;
-  padding: 5px 10px;
-  border-radius: 5px;
+.skill-list li {
+  background: hsl(var(--primary) / 0.1);
+  color: hsl(var(--primary));
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
 }
 
 footer {
+  background: linear-gradient(to right, hsl(221, 83%, 53%), hsl(262, 83%, 58%));
+  color: hsl(var(--primary-foreground));
   text-align: center;
-  margin-top: 20px;
-  padding: 10px;
-  background: #3b82f6;
+  padding: 1rem;
 }
 
 footer a {
-  color: #fff;
+  color: hsl(var(--primary-foreground));
   text-decoration: none;
 }
 
@@ -79,9 +149,14 @@ footer a:hover {
   text-decoration: underline;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 640px) {
   .container {
-    width: 95%;
+    margin: 1rem;
+  }
+
+  header,
+  main {
+    padding: 1rem;
   }
 }
 
