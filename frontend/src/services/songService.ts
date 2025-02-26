@@ -18,7 +18,10 @@ export const identifySong = async (audioBlob: Blob): Promise<Song> => {
   };
 
   const formData = new FormData();
-  const fileName = `recording.${getFileExtension(audioBlob)}`;
+  const fileExtension = getFileExtension(audioBlob);
+  const fileName = `recording.${fileExtension}`;
+
+  // Use the correct filename with the proper extension
   formData.append('file', audioBlob, fileName);
   console.log('Sending file:', fileName);
   console.log('Azure Function URL:', config.AZURE_FUNCTION_URL);
@@ -41,12 +44,18 @@ export const identifySong = async (audioBlob: Blob): Promise<Song> => {
       throw new Error(`Failed to identify song: ${response.status} - ${responseText}`);
     }
 
-    const data = JSON.parse(responseText);
-    if (!data.song) {
+    try {
+      const data = JSON.parse(responseText);
+      if (!data.song) {
+        console.error('Missing song data in response:', data);
+        throw new Error('Invalid response format from server');
+      }
+
+      return data.song;
+    } catch (parseError) {
+      console.error('Error parsing JSON response:', parseError);
       throw new Error('Invalid response format from server');
     }
-
-    return data.song;
   } catch (error) {
     console.error('Error identifying song:', error);
     throw error;
