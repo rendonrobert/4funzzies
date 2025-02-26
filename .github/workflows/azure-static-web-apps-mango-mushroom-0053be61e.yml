@@ -50,7 +50,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "frontend"
-          api_location: "./backend"
+          api_location: ""
           output_location: "build"
           app_build_command: "npm run build"
           github_id_token: ${{ steps.idtoken.outputs.result }}
