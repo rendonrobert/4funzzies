@@ -9,10 +9,10 @@ export const identifySong = async (audioBlob: Blob): Promise<Song> => {
   }
 
   try {
-    // Convert WebM to MP3 if needed
+    // Convert WebM to WAV if needed
     let processedBlob = audioBlob;
     if (audioBlob.type.includes('webm')) {
-      console.log('Converting WebM to MP3...');
+      console.log('Converting WebM to WAV...');
       processedBlob = await convertWebMtoMP3(audioBlob);
       console.log('Conversion complete');
     }
@@ -22,6 +22,7 @@ export const identifySong = async (audioBlob: Blob): Promise<Song> => {
       console.log('Audio blob type:', type);
       console.log('Audio blob size:', blob.size, 'bytes');
       if (type.includes('mp3')) return 'mp3';
+      if (type.includes('wav')) return 'wav';
       if (type.includes('webm')) return 'webm';
       if (type.includes('ogg')) return 'ogg';
       return 'audio';
