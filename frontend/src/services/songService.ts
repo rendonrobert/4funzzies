@@ -1,5 +1,6 @@
 import { Song } from '../types/song';
 import { config } from '../config';
+import { convertWebMtoMP3 } from '../utils/audioConverter';
 
 export const identifySong = async (audioBlob: Blob): Promise<Song> => {
   if (!config.AZURE_FUNCTION_KEY) {
@@ -7,26 +8,34 @@ export const identifySong = async (audioBlob: Blob): Promise<Song> => {
     throw new Error('Authentication configuration missing');
   }
 
-  const getFileExtension = (blob: Blob) => {
-    const type = blob.type;
-    console.log('Audio blob type:', type);
-    console.log('Audio blob size:', blob.size, 'bytes');
-    if (type.includes('mp3')) return 'mp3';
-    if (type.includes('webm')) return 'webm';
-    if (type.includes('ogg')) return 'ogg';
-    return 'audio';
-  };
-
-  const formData = new FormData();
-  const fileExtension = getFileExtension(audioBlob);
-  const fileName = `recording.${fileExtension}`;
-
-  // Use the correct filename with the proper extension
-  formData.append('file', audioBlob, fileName);
-  console.log('Sending file:', fileName);
-  console.log('Azure Function URL:', config.AZURE_FUNCTION_URL);
-
   try {
+    // Convert WebM to MP3 if needed
+    let processedBlob = audioBlob;
+    if (audioBlob.type.includes('webm')) {
+      console.log('Converting WebM to MP3...');
+      processedBlob = await convertWebMtoMP3(audioBlob);
+      console.log('Conversion complete');
+    }
+
+    const getFileExtension = (blob: Blob) => {
+      const type = blob.type;
+      console.log('Audio blob type:', type);
+      console.log('Audio blob size:', blob.size, 'bytes');
+      if (type.includes('mp3')) return 'mp3';
+      if (type.includes('webm')) return 'webm';
+      if (type.includes('ogg')) return 'ogg';
+      return 'audio';
+    };
+
+    const formData = new FormData();
+    const fileExtension = getFileExtension(processedBlob);
+    const fileName = `recording.${fileExtension}`;
+
+    // Use the processed blob
+    formData.append('file', processedBlob, fileName);
+    console.log('Sending file:', fileName);
+    console.log('Azure Function URL:', config.AZURE_FUNCTION_URL);
+
     const response = await fetch(config.AZURE_FUNCTION_URL, {
       method: 'POST',
       headers: {
