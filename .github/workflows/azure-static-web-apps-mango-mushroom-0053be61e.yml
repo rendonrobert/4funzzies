@@ -40,8 +40,16 @@ jobs:
         id: idtoken
         with:
           script: |
-              const token = await core.getIDToken();
-              return token;
+            const coredemo = require('@actions/core')
+            return await coredemo.getIDToken()
+          result-encoding: string
+
+      # Create a .env file for React to use during build
+      - name: Create .env file
+        run: |
+          echo "REACT_APP_AZURE_FUNCTION_KEY=${{ secrets.AZURE_FUNCTION_KEY }}" > frontend/.env
+          echo "REACT_APP_AZURE_FUNCTION_URL=${{ secrets.AZURE_FUNCTION_URL }}" >> frontend/.env
+
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
@@ -50,7 +58,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "frontend"
-          api_location: ""
+          api_location: ""  # Keep this as is from your successful deployment
           output_location: "build"
           app_build_command: "npm run build"
           github_id_token: ${{ steps.idtoken.outputs.result }}
