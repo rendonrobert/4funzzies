@@ -47,7 +47,7 @@ jobs:
       # Create config.ts file with secrets
       - name: Create config file
         run: |
-          echo "export const config = {" > frontend/src/config.ts
+          echo "export const config = {" > src/config.ts
           echo "  AZURE_FUNCTION_KEY: '${{ secrets.AZURE_FUNCTION_KEY }}'," >> frontend/src/config.ts
           echo "  AZURE_FUNCTION_URL: '${{ secrets.AZURE_FUNCTION_URL }}'" >> frontend/src/config.ts
           echo "};" >> frontend/src/config.ts
@@ -59,7 +59,7 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_MANGO_MUSHROOM_0053BE61E }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
-          app_location: "frontend"
+          app_location: ""
           api_location: ""
           output_location: "build"
           app_build_command: "npm run build"
