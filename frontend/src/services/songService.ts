@@ -37,12 +37,28 @@ export const identifySong = async (audioBlob: Blob): Promise<Song> => {
     console.log('Sending file:', fileName);
     console.log('Azure Function URL:', config.AZURE_FUNCTION_URL);
 
-    const response = await fetch(config.AZURE_FUNCTION_URL, {
+    // Set up headers with different auth options that Azure Functions might expect
+    const headers: Record<string, string> = {
+      // Standard function key header
+      'x-functions-key': config.AZURE_FUNCTION_KEY,
+      // Alternative header format
+      'x-api-key': config.AZURE_FUNCTION_KEY,
+      // Accept JSON response
+      'Accept': 'application/json',
+    };
+
+    // Check if the URL includes a code parameter already
+    let url = config.AZURE_FUNCTION_URL;
+    if (!url.includes('code=')) {
+      // If not, add the code as a query parameter as another authentication option
+      const separator = url.includes('?') ? '&' : '?';
+      url = `${url}${separator}code=${encodeURIComponent(config.AZURE_FUNCTION_KEY)}`;
+      console.log('Added code parameter to URL');
+    }
+
+    const response = await fetch(url, {
       method: 'POST',
-      headers: {
-        'x-functions-key': config.AZURE_FUNCTION_KEY,
-        'Accept': 'application/json',
-      },
+      headers,
       body: formData,
     });
 
