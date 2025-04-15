@@ -1,0 +1,16 @@
+{
+  "routes": [
+    {
+      "route": "/twilight-zone/*",
+      "serve": "/twilight-zone/*"
+    }
+  ],
+  "navigationFallback": {
+    "rewrite": "index.html",
+    "exclude": [
+      "/twilight-zone/_next/*",
+      "/twilight-zone/static/*",
+      "/*.{png,jpg,gif,svg,css,js}"
+    ]
+  }
+}
