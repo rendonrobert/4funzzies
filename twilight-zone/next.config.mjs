@@ -13,6 +13,12 @@ try {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
+  basePath: '/twilight-zone',
+  trailingSlash: true,
+  images: {
+    unoptimized: true
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },
