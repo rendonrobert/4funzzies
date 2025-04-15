@@ -1,5 +1,4 @@
 name: Azure Static Web Apps CI/CD
-
 on:
   push:
     branches:
@@ -8,7 +7,6 @@ on:
     types: [opened, synchronize, reopened, closed]
     branches:
       - main
-
 jobs:
   build_and_deploy_job:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
@@ -22,19 +20,31 @@ jobs:
         with:
           submodules: true
           lfs: false
-
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-
-      - name: Install Dependencies
+          
+      # Frontend build steps
+      - name: Install Frontend Dependencies
         working-directory: frontend
         run: npm install
-
+        
+      # Twilight Zone Next.js build steps
+      - name: Install Twilight Zone Dependencies
+        working-directory: twilight-zone
+        run: npm install
+        
+      - name: Configure Next.js for Subdirectory
+        working-directory: twilight-zone
+        run: |
+          if ! grep -q "basePath: '/twilight-zone'" next.config.mjs; then
+            sed -i 's/const nextConfig = {/const nextConfig = {\n  output: "export",\n  basePath: "\/twilight-zone",\n  trailingSlash: true,\n  images: {\n    unoptimized: true\n  },/' next.config.mjs
+          fi
+          
       - name: Install OIDC Client from Core Package
         run: npm install @actions/core@1.6.0 @actions/http-client
-
+        
       - name: Get Id Token
         uses: actions/github-script@v6
         id: idtoken
@@ -43,7 +53,7 @@ jobs:
             const coredemo = require('@actions/core')
             return await coredemo.getIDToken()
           result-encoding: string
-
+          
       # Create config.ts file with secrets
       - name: Create config file
         run: |
@@ -51,7 +61,48 @@ jobs:
           echo "  AZURE_FUNCTION_KEY: '${{ secrets.AZURE_FUNCTION_KEY }}'," >> frontend/src/config.ts
           echo "  AZURE_FUNCTION_URL: '${{ secrets.AZURE_FUNCTION_URL }}'" >> frontend/src/config.ts
           echo "};" >> frontend/src/config.ts
-
+          
+      # Create staticwebapp.config.json file
+      - name: Create Static Web App Config
+        run: |
+          echo '{
+            "routes": [
+              {
+                "route": "/twilight-zone/*",
+                "serve": "/twilight-zone/*"
+              }
+            ],
+            "navigationFallback": {
+              "rewrite": "index.html",
+              "exclude": [
+                "/twilight-zone/_next/*",
+                "/twilight-zone/static/*",
+                "/*.{png,jpg,gif,svg,css,js}"
+              ]
+            }
+          }' > staticwebapp.config.json
+          
+      # Build both projects
+      - name: Build Frontend
+        working-directory: frontend
+        run: npm run build
+        env:
+          AZURE_FUNCTION_KEY: ${{ secrets.AZURE_FUNCTION_KEY }}
+          AZURE_FUNCTION_URL: ${{ secrets.AZURE_FUNCTION_URL }}
+          
+      - name: Build Twilight Zone
+        working-directory: twilight-zone
+        run: npm run build
+        
+      # Create a combined output directory
+      - name: Prepare Combined Output
+        run: |
+          mkdir -p combined-output
+          cp -r frontend/build/* combined-output/
+          mkdir -p combined-output/twilight-zone
+          cp -r twilight-zone/out/* combined-output/twilight-zone/
+          cp staticwebapp.config.json combined-output/
+          
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
@@ -59,15 +110,15 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_MANGO_MUSHROOM_0053BE61E }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
-          app_location: "frontend"
+          app_location: "combined-output"  # Change to the combined output directory
           api_location: ""
-          output_location: "build"
-          app_build_command: "npm run build"
+          output_location: ""  # Not needed since we're already providing built files
+          skip_app_build: true  # Skip the build step since we've already built everything
           github_id_token: ${{ steps.idtoken.outputs.result }}
         env:
           AZURE_FUNCTION_KEY: ${{ secrets.AZURE_FUNCTION_KEY }}
           AZURE_FUNCTION_URL: ${{ secrets.AZURE_FUNCTION_URL }}
-
+          
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-latest
